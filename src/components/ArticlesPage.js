@@ -5,19 +5,37 @@ import React, { Component } from 'react';
 class ArticlesPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      articles: [],
+    };
   }
 
   componentDidMount() {
-    // fetch here
+    const {id} = this.props;
+    fetch(`api/articles`)
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error("Bad response from server");
+        }
+        return response.json();
+      })
+      .then((articles) => {
+        console.log(articles);
+        this.setState({
+          articles,
+        });
+      });
   }
 
   render() {
+    const {articles} = this.state;
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-12">
-            {/* implement */}
+            { articles.map((article, index) => (
+              <a href={`#/articles/${article._id}`} key={index}>{article.title}</a>
+            ))}
           </div>
         </div>
       </div>
